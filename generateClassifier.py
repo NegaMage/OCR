@@ -5,28 +5,17 @@ from sklearn.externals import joblib
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import classification_report
 from sklearn import datasets
-from skimage import exposure
-import numpy as np
-import imutils
-import cv2
-from PIL import Image
 import tensorflow as tf
 
-
-
-
-    
 # load the MNIST digits dataset
 mnist = datasets.load_digits()
-# take the MNIST data and construct the training and testing split, using 75% of the
-# data for training and 25% for testing
-#(trainData, testData, trainLabels, testLabels) = train_test_split(np.array(mnist.data), mnist.target, test_size=0.25, random_state=42)
-# now, let's take 10% of the training data and use that for validation
-#(trainData, valData, trainLabels, valLabels) = train_test_split(trainData, trainLabels, test_size=0.1, random_state=84)
 
+# take the MNIST data and construct the training and testing split
 (trainData, trainLabels), (testData, testLabels) = tf.keras.datasets.mnist.load_data()
+# now, let's take 10% of the training data and use that for validation
 (trainData, valData, trainLabels, valLabels) = train_test_split(trainData, trainLabels, test_size=0.1, random_state=84)
 
+#reshaping (xxx, 28, 28) into (xxx, 784)
 trainData = trainData.reshape(54000, 784)
 valData = valData.reshape(6000, 784)
 testData = testData.reshape(10000, 784)
@@ -35,6 +24,7 @@ testData = testData.reshape(10000, 784)
 print("training data points: {}".format(len(trainLabels)))
 print("validation data points: {}".format(len(valLabels)))
 print("testing data points: {}".format(len(testLabels)))
+
 # initialize the values of k for our k-Nearest Neighbor classifier along with the
 # list of accuracies for each value of k
 kVals = 3
@@ -57,4 +47,5 @@ predictions = model.predict(testData)
 print("EVALUATION ON TESTING DATA")
 print(classification_report(testLabels, predictions))
 
+#saving the trained classifier
 joblib.dump(model, "digits_cls.pkl", compress=3)
